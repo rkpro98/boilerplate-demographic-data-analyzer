@@ -18,27 +18,34 @@ def calculate_demographic_data(print_data=True):
     # What percentage of people without advanced education make more than 50K?
 
     # with and without `Bachelors`, `Masters`, or `Doctorate`
-    higher_education = None
-    lower_education = None
+    higher_education = df[df['education'].isin(['Bachelors','Masters','Doctorate'])]
+    lower_education = df[~df['education'].isin(['Bachelors','Masters','Doctorate'])]
 
     # percentage with salary >50K
-    higher_education_rich = None
-    lower_education_rich = None
+    higher_education_rich = (len(higher_education[higher_education['salary'] == '>50K']) /len(higher_education) ) * 100
+    lower_education_rich = (len(lower_education[lower_education['salary'] == '>50K']) /len(lower_education) ) * 100
 
     # What is the minimum number of hours a person works per week (hours-per-week feature)?
-    min_work_hours = None
+    min_work_hours = df['hours-per-week'].min()
 
     # What percentage of the people who work the minimum number of hours per week have a salary of >50K?
-    num_min_workers = None
+    num_min_workers = df[df['hours-per-week'] == min_work_hours]
 
-    rich_percentage = None
+    rich_percentage = (len(num_min_workers[num_min_workers['salary'] == '>50K']) / len(num_min_workers)) * 100
 
     # What country has the highest percentage of people that earn >50K?
-    highest_earning_country = None
-    highest_earning_country_percentage = None
+    country_earnings = df[df['salary']=='>50K']['native-country'].value_counts()
+    country_population = df['native-country'].value_counts()
+    country_percentages = (country_earnings/country_population) * 100
+
+    highest_earning_country = country_percentages.idxmax()
+    highest_earning_country_percentage = country_percentages[highest_earning_country]
 
     # Identify the most popular occupation for those who earn >50K in India.
-    top_IN_occupation = None
+
+    top_IN = df[(df['salary']== '>50K') & (df['native-country'] == 'India')]
+    top_OCCU_count = top_IN['occupation'].value_counts()
+    top_IN_occupation = top_OCCU_count.idxmax()
 
     # DO NOT MODIFY BELOW THIS LINE
 
